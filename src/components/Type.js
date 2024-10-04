@@ -6,8 +6,25 @@ const words = [
   "it", "for", "not", "on", "with", "he", "as", "you", "do", "at",
   "this", "but", "his", "by", "from", "they", "we", "say", "her", "she",
   "or", "an", "will", "my", "one", "all", "would", "there", "their", "what",
-  "so", "up", "out", "if", "about", "who", "get", "which", "go", "me"
+  "so", "up", "out", "if", "about", "who", "get", "which", "go", "me", "when", 
+  "make", "can", "like", "time", "no", "just", "him", "know", "take", "people", 
+  "into", "your", "good", "some", "could", "them", "see", "other", "than", 
+  "then", "now", "look", "only", "come", "its", "over", "think", "also", "back", 
+  "after", "use", "two", "how", "our", "work", "first", "well", "way", "even", 
+  "new", "want", "because", "any", "these", "give", "day", "most", "us",
+
+  "information", "understand", "development", "community", "technology", 
+  "organization", "government", "international", "environment", "experience",
+  "university", "opportunity", "relationship", "communication", "education",
+  "responsibility", "profession", "individual", "application", "operation",
+  "generation", "knowledge", "strategy", "performance", "presentation",
+
+  "Alexander", "Elizabeth", "Christopher", "Charlotte", "Benjamin", "Isabella",
+  "Jonathan", "Victoria", "Abraham", "Theodore", "Catherine", "William",
+  "Nicholas", "Penelope", "Nathaniel", "Eleanor", "Samantha", "Gregory",
+  "Stephanie", "Michael", "Jessica", "Robert", "Olivia", "Matthew", "Sophia"
 ];
+
 
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {

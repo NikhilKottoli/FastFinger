@@ -14,6 +14,10 @@ const NavBar = () => {
     navigate('/Leaderboard');
   }
 
+  const gotoStats = () => {
+    navigate('/Stats');
+  }
+
   const buttonClass = `
   relative
   overflow-hidden
@@ -55,6 +59,11 @@ const NavBar = () => {
           <li>
             <button className={buttonClass} onClick={gotoContact}>
               Leader Board
+            </button>
+          </li>
+          <li>
+            <button className={buttonClass} onClick={gotoStats}>
+              Stats
             </button>
           </li>
         </ul>

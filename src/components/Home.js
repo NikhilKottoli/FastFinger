@@ -18,14 +18,6 @@ const Button = ({ children, variant = 'primary', className = '', ...props }) => 
   );
 };
 
-// Icons
-const ArrowRight = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="5" y1="12" x2="19" y2="12"></line>
-    <polyline points="12 5 19 12 12 19"></polyline>
-  </svg>
-);
-
 const Keyboard = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
@@ -72,7 +64,7 @@ const TypingAnimation = () => {
 
 const HomePage = () => {
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4 bg-black">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-black">
       <FastTypeLogo />
       <TypingAnimation />
       <p className="text-xl text-gray-600 mb-8 text-center animate-fade-in-up">
@@ -80,10 +72,16 @@ const HomePage = () => {
       </p>
       <div className="flex space-x-4 animate-fade-in-up">
         <Button>
-          Get Started <ArrowRight />
+          <a href="/Type">
+            Get Started
+          </a>
+          
         </Button>
         <Button variant="outline">
-          Learn More <Keyboard />
+          <a href="/About">
+            Learn More <Keyboard />
+          </a>
+          
         </Button>
       </div>
     </div>
