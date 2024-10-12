@@ -16,6 +16,7 @@ const Stats = () => {
         const fetchStats = async () => {
             try {
                 const id = localStorage.getItem('userId');
+                console.log('User ID:', id); // Log the user ID
                 const response = await fetch(`http://localhost:4000/api/stats/${id}`);
                 const data = await response.json();
                 console.log('Fetched Stats:', data); // Log fetched data
@@ -23,10 +24,10 @@ const Stats = () => {
                 // Map the fetched data to the component's state
                 setStats({
                     wpm: data.averageWPM,                // Use averageWPM
-                    accuracy: data.averageAccuracy,       // Use averageAccuracy
-                    totalKeys: 0,                         // Set to 0 or modify if you have this data
-                    correctKeys: data.totalCorrectWords,  // Use totalCorrectWords
-                    incorrectKeys: data.totalIncorrectWords, // Use totalIncorrectWords
+                    accuracy: data.averageAccuracy,       // Use averageAccuracy               // Set to 0 or modify if you have this data
+                    correctKeys: data.Correct,  // Use totalCorrectWords
+                    incorrectKeys: data.Wrong, // Use totalIncorrectWords
+                    totalKeys : data.Correct + data.Wrong
                 });
             } catch (error) {
                 console.error('Error fetching stats:', error);

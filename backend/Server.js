@@ -10,13 +10,14 @@ app.use(express.json());
 // MongoDB connection
 mongoose.connect('mongodb://localhost:27017/FastFinger', { useNewUrlParser: true, useUnifiedTopology: true });
 
-// Define the User model
 const userSchema = new mongoose.Schema({
     name: String,
     email: { type: String, required: true, unique: true }, // Unique email field
     password: { type: String, required: true }, // Password field
     WPM: Number,
-    accuracy: Number
+    accuracy: Number,
+    correctWords: { type: Number, default: 0 }, // Field to store correct words
+    incorrectWords: { type: Number, default: 0 } // Field to store incorrect words
 });
 
 // Hash the password before saving it to the database
@@ -89,39 +90,37 @@ app.get('/api/user/:id', async (req, res) => {
 });
 
 
-// Route to add user results (update WPM and accuracy)
-// Route to add user results (update WPM and accuracy)
 app.post('/add-user', async (req, res) => {
-    const { email, WPM, accuracy, password, id } = req.body;
+    const { email, WPM, accuracy, correctWords, incorrectWords } = req.body;
 
     try {
         let user = await User.findOne({ email });
 
-        if (!user) {
-            // If user does not exist, create a new one with a password
-            if (!password) {
-                return res.status(400).send('Password is required for new users.');
-            }
-            user = new User({
+        if (user) {
+            // Update existing user
+            user.WPM = WPM;
+            user.accuracy = accuracy;
+            user.correctWords = correctWords; // Update correctWords
+            user.incorrectWords = incorrectWords; // Update incorrectWords
+
+            await user.save();
+            return res.status(200).json({ message: 'User updated successfully' });
+        } else {
+            // Create a new user
+            const newUser = new User({
                 email,
                 WPM,
                 accuracy,
-                password, // Use the provided password
+                correctWords,
+                incorrectWords
             });
-        } else {
-            // Update existing user's WPM and accuracy
-            user.WPM = WPM;
-            user.accuracy = accuracy;
+            await newUser.save();
+            return res.status(201).json({ message: 'User added successfully' });
         }
-
-        await user.save();
-        res.status(201).send('User added/updated successfully');
-    } catch (error) {
-        console.error('Error adding user:', error);
-        res.status(500).send('Server error');
+    } catch (err) {
+        res.status(500).json({ message: 'Server Error: ' + err.message });
     }
 });
-
 
 
 
@@ -165,23 +164,25 @@ app.get('/api/stats/:id', async (req, res) => {
 
     try {
         // Find the user by ID
-        const user = await User.findById(userId).select('WPM accuracy correctWords incorrectWords');
+        const user = await User.findById(userId).select('WPM accuracy correctWords incorrectWords'); // Use 'incorrectWords'
+        
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
 
         // Prepare the response with user-specific statistics
         res.json({
-            totalUsers: 1, // Since we're only looking at one user
-            averageWPM: user.WPM,
-            averageAccuracy: user.accuracy,
-            totalCorrectWords: user.correctWords || 0, // Assuming you have correctWords in the user model
-            totalIncorrectWords: user.incorrectWords || 0 // Assuming you have incorrectWords in the user model
+            totalUsers: 1, // This indicates you're fetching stats for one user
+            averageWPM: user.WPM || 0, // Default to 0 if undefined
+            averageAccuracy: user.accuracy || 0, // Default to 0 if undefined
+            Correct: user.correctWords, // Default to 0 if undefined
+            Wrong: user.incorrectWords // Use 'incorrectWords'
         });
     } catch (err) {
         res.status(500).json({ message: 'Server Error: ' + err.message });
     }
 });
+
 
 
 // Add a root route

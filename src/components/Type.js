@@ -42,6 +42,7 @@ export default function TypingTest() {
   const [errors, setErrors] = useState(0);
   const [incorrectIndices, setIncorrectIndices] = useState([]);
   const [correctWords, setCorrectWords] = useState(0);
+  const [userEmail, setUserEmail] = useState('');
   const [wrongWords, setWrongWords] = useState(0);
   const inputRef = useRef(null);
 
@@ -127,7 +128,7 @@ export default function TypingTest() {
     const accuracy = calculateAccuracy();
     const totalKeys = input.length + currentIndex; // Including space characters
     const correctKeys = totalKeys - errors;
-    const email = localStorage.getItem('email');
+    const email = userEmail;
     console.log('Email:', email);
     if (!email) {
       alert('Email not found in local storage.');
@@ -153,13 +154,19 @@ export default function TypingTest() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(userData),
+        body: JSON.stringify({
+          email: userData.email,
+          WPM: userData.WPM,
+          accuracy: userData.accuracy,
+          correctWords: userData.correctWords, // Ensure these fields are being passed
+          incorrectWords: userData.incorrectWords,
+        }),
       });
-
+    
       if (!response.ok) {
         throw new Error('Failed to submit: ' + response.status + ' ' + response.statusText);
       }
-
+    
       alert('Results submitted successfully!');
       resetTest(); // Reset the test after submission
     } catch (error) {
