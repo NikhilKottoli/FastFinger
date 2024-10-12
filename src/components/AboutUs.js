@@ -1,28 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
-const TeamMember = ({ name, role, image }) => (
-  <motion.div
-    className="flex flex-col items-center p-4 bg-white rounded-lg shadow-md"
-    initial={{ opacity: 0, y: 50 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5 }}
-  >
-    <img src={`/api/placeholder/${image}`} alt={name} className="w-32 h-32 rounded-full mb-4" />
-    <h3 className="text-xl font-semibold">{name}</h3>
-    <p className="text-gray-600">{role}</p>
-  </motion.div>
-);
-
 const Benefit = ({ icon, title, description }) => (
   <motion.div
-    className="flex flex-col items-center text-center p-6 bg-blue-50 rounded-lg"
+    className="flex flex-col items-center text-center p-6 bg-blue-50 rounded-lg bg-gray-500"
     whileHover={{ scale: 1.05 }}
     transition={{ type: "spring", stiffness: 300 }}
   >
     {icon}
-    <h3 className="text-xl font-semibold mt-4 mb-2">{title}</h3>
-    <p className="text-gray-600">{description}</p>
+    <h3 className="text-3xl font-bold mt-4 mb-2 text-[#FFAA00]">{title}</h3>
+    <p className="text-xl font-bold">{description}</p>
   </motion.div>
 );
 
@@ -43,13 +30,13 @@ const AboutUsPage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-black py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-black py-12 px-4 sm:px-6 lg:px-8 ">
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
-          className="text-center mb-16"
+          className="text-center mb-8"
         >
           <h1 className="text-4xl font-bold text-[#FFAA00] mb-4">About FastType</h1>
           <p className="text-xl text-gray-600">{animatedText}</p>
@@ -62,7 +49,7 @@ const AboutUsPage = () => {
           className="mb-16"
         >
           <h2 className="text-3xl font-semibold text-center mb-8">Our Mission</h2>
-          <p className="text-xl text-white text-center max-w-3xl mx-auto">
+          <p className="text-xl text-white text-center max-w-2xl mx-auto">
             At FastType, we're passionate about helping people improve their typing skills. 
             Our mission is to provide an engaging, effective platform for users to enhance 
             their speed and accuracy, empowering them in their personal and professional lives.
@@ -70,7 +57,6 @@ const AboutUsPage = () => {
         </motion.section>
 
         <section className="mb-16">
-          <h2 className="text-3xl font-semibold text-center mb-8">Why Choose FastType?</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <Benefit 
               icon={<svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>}

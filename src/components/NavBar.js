@@ -8,7 +8,7 @@ const NavBar = () => {
     navigate('/Type');
   }
   const gotoAbout = () => {
-    navigate('/');
+    navigate('/Home');
   }
   const gotoContact = () => {
     navigate('/Leaderboard');

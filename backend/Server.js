@@ -159,6 +159,31 @@ app.delete('/delete-user', async (req, res) => {
     }
 });
 
+
+app.get('/api/stats/:id', async (req, res) => {
+    const userId = req.params.id; // Get the user's ID from the route parameter
+
+    try {
+        // Find the user by ID
+        const user = await User.findById(userId).select('WPM accuracy correctWords incorrectWords');
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Prepare the response with user-specific statistics
+        res.json({
+            totalUsers: 1, // Since we're only looking at one user
+            averageWPM: user.WPM,
+            averageAccuracy: user.accuracy,
+            totalCorrectWords: user.correctWords || 0, // Assuming you have correctWords in the user model
+            totalIncorrectWords: user.incorrectWords || 0 // Assuming you have incorrectWords in the user model
+        });
+    } catch (err) {
+        res.status(500).json({ message: 'Server Error: ' + err.message });
+    }
+});
+
+
 // Add a root route
 app.get('/', (req, res) => {
     res.send('Welcome to the FastFinger API!'); // Response message for root route

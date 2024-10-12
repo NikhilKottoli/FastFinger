@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Timer } from 'lucide-react';
 
 const words = [
   "the", "be", "to", "of", "and", "a", "in", "that", "have", "I",
@@ -41,11 +40,14 @@ export default function TypingTest() {
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
   const [errors, setErrors] = useState(0);
-  const [incorrectIndices, setIncorrectIndices] = useState([]); // Track incorrect words
+  const [incorrectIndices, setIncorrectIndices] = useState([]);
+  const [correctWords, setCorrectWords] = useState(0);
+  const [wrongWords, setWrongWords] = useState(0);
   const inputRef = useRef(null);
 
   useEffect(() => {
     resetTest();
+    fetchUserDetails();
   }, []);
 
   const resetTest = () => {
@@ -56,8 +58,34 @@ export default function TypingTest() {
     setEndTime(null);
     setErrors(0);
     setIncorrectIndices([]);
+    setCorrectWords(0);
+    setWrongWords(0);
     if (inputRef.current) inputRef.current.focus();
   };
+
+  const fetchUserDetails = async () => {
+    try {
+      const id = localStorage.getItem('userId');
+  
+      const response = await fetch(`http://localhost:4000/api/user/${id}`, { // Use backticks here
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch user details');
+      }
+      const data = await response.json();
+      console.log('User details:', data);
+  
+      setUserEmail(data.email);
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+      alert('Failed to fetch user details. Please try again.');
+    }
+  };
+  
 
   const handleInputChange = (e) => {
     const value = e.target.value;
@@ -69,9 +97,12 @@ export default function TypingTest() {
 
     if (value.endsWith(' ')) {
       const trimmedValue = value.trim();
-      if (trimmedValue !== testWords[currentIndex]) {
+      if (trimmedValue === testWords[currentIndex]) {
+        setCorrectWords(correctWords + 1);
+      } else {
+        setWrongWords(wrongWords + 1);
         setErrors(errors + 1);
-        setIncorrectIndices([...incorrectIndices, currentIndex]); // Mark incorrect word
+        setIncorrectIndices([...incorrectIndices, currentIndex]);
       }
       setCurrentIndex(currentIndex + 1);
       setInput('');
@@ -84,7 +115,57 @@ export default function TypingTest() {
 
   const calculateWPM = () => {
     const timeInMinutes = (endTime - startTime) / 60000;
-    return Math.round((testWords.length / timeInMinutes) * (1 - errors / testWords.length));
+    return Math.round((testWords.length / timeInMinutes) * (correctWords / testWords.length));
+  };
+
+  const calculateAccuracy = () => {
+    return Math.round((correctWords / testWords.length) * 100);
+  };
+
+  const handleSubmit = async () => {
+    const WPM = calculateWPM();
+    const accuracy = calculateAccuracy();
+    const totalKeys = input.length + currentIndex; // Including space characters
+    const correctKeys = totalKeys - errors;
+    const email = localStorage.getItem('email');
+    console.log('Email:', email);
+    if (!email) {
+      alert('Email not found in local storage.');
+      return;
+    }
+
+    const userData = {
+      email,
+      WPM,
+      accuracy,
+      totalKeys,
+      correctKeys,
+      incorrectKeys: errors,
+      correctWords,
+      wrongWords,
+    };
+
+    console.log('Submitting user data:', userData);
+
+    try {
+      const response = await fetch('http://localhost:4000/add-user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit: ' + response.status + ' ' + response.statusText);
+      }
+
+      alert('Results submitted successfully!');
+      resetTest(); // Reset the test after submission
+    } catch (error) {
+      console.error('Error submitting results:', error);
+      alert('Failed to submit results. Please try again.');
+    }
   };
 
   return (
@@ -99,9 +180,9 @@ export default function TypingTest() {
                   key={index}
                   className={`mr-2 mb-2 ${
                     index < currentIndex
-                      ? incorrectIndices.includes(index) 
-                        ? 'text-red-500'  // Incorrect words in red
-                        : 'text-green-400' // Correct words in green
+                      ? incorrectIndices.includes(index)
+                        ? 'text-red-500'
+                        : 'text-green-400'
                       : index === currentIndex
                       ? 'bg-blue-500'
                       : ''
@@ -124,18 +205,20 @@ export default function TypingTest() {
         ) : (
           <div className="text-center">
             <h2 className="text-2xl font-bold mb-4">Test Complete!</h2>
-            <p className="text-xl mb-2">
-              WPM: {calculateWPM()}
-            </p>
-            <p className="text-xl mb-4">
-              Errors: {errors}
-            </p>
-            <p className="text-xl mb-4">
-              Accuracy: {(50-errors)*2}%
-            </p>
+            <p className="text-xl mb-2">WPM: {calculateWPM()}</p>
+            <p className="text-xl mb-2">Correct Words: {correctWords}</p>
+            <p className="text-xl mb-2">Wrong Words: {wrongWords}</p>
+            <p className="text-xl mb-2">Errors: {errors}</p>
+            <p className="text-xl mb-4">Accuracy: {calculateAccuracy()}%</p>
+            <button
+              onClick={handleSubmit}
+              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+            >
+              Submit Results
+            </button>
             <button
               onClick={resetTest}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-2"
             >
               Retry
             </button>
@@ -144,10 +227,7 @@ export default function TypingTest() {
       </div>
       {startTime && !endTime && (
         <div className="mt-4 flex items-center">
-          <Timer className="mr-2" />
-          <span>
-            Time: {((Date.now() - startTime) / 1000).toFixed(1)} seconds
-          </span>
+          <span>Time: {((Date.now() - startTime) / 1000).toFixed(1)} seconds</span>
         </div>
       )}
     </div>
