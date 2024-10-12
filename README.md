@@ -18,23 +18,61 @@ FastFinger is a fun and interactive typing game that helps improve your typing s
     git clone https://github.com/NikhilKottoli/FastFinger.git
     ```
 
-2. Install the required dependencies:
+2. Navigate to the project directory:
+
+    ```bash
+    cd FastFinger
+    ```
+
+3. Install the required dependencies for both frontend and backend:
+
+    **For Frontend:**
 
     ```bash
     npm install
     ```
 
+    **For Backend:**
+
+    ```bash
+    cd ../backend
+    npm install
+    ```
+
 ## Usage
 
-1. Start the game:
+### Starting the Backend
+
+1. Make sure you are in the `backend` directory:
+
+    ```bash
+    cd backend
+    ```
+
+2. Start the backend server:
 
     ```bash
     npm start
     ```
 
-2. Open your web browser and navigate to `http://localhost:3000`.
+### Starting the Frontend
 
-3. Type the displayed words as fast and accurately as possible.
+1. Open a new terminal window or tab.
+2. Navigate to the `frontend` directory:
+
+    ```bash
+    cd FastFinger
+    ```
+
+3. Start the frontend application:
+
+    ```bash
+    npm start
+    ```
+
+4. Open your web browser and navigate to `http://localhost:3000`.
+
+5. Type the displayed words as fast and accurately as possible.
 
 ## Contributing
 
