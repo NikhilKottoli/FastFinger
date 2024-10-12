@@ -2,8 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors'); // To allow requests from the frontend
 const bcrypt = require('bcrypt');
-
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
@@ -36,9 +36,8 @@ app.post('/register', async (req, res) => {
     const user = new User({ name, email, password, WPM, accuracy });
     try {
         await user.save();
-        res.status(201).send('User registered');
     } catch (err) {
-        res.status(400).send('Error registering user: ' + err.message);
+        return res.status(400).json({ message: 'Registration failed: ' + err.message });
     }
 });
 
@@ -49,42 +48,82 @@ app.post('/login', async (req, res) => {
     try {
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(400).send('Invalid email or password');
+            return res.status(400).json({ message: 'Invalid email or password' });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).send('Invalid email or password');
+            return res.status(400).json({ message: 'Invalid email or password' });
         }
 
-        res.send('Login successful');
+        // Successful login: send back user info (no token)
+        return res.status(200).json({
+            message: 'Login successful',
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                WPM: user.WPM,
+                accuracy: user.accuracy,
+            },
+        });
     } catch (err) {
-        res.status(500).send('Server Error: ' + err.message);
+        res.status(500).json({ message: 'Server Error: ' + err.message });
     }
 });
 
-app.post('/login', async (req, res) => {
-    const { username, password } = req.body;
+// Route to get the current user's information (based on ID sent in request)
+app.get('/api/user/:id', async (req, res) => {
+    const userId = req.params.id; // Get the user's ID from the route parameter
 
     try {
-        // Find the user by username
-        const user = await User.findOne({ username });
+        const user = await User.findById(userId).select('name email WPM accuracy'); // Select specific fields
         if (!user) {
-            return res.status(400).send('Invalid username or password');
+            return res.status(404).json({ message: 'User not found' });
         }
 
-        // Check password
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(400).send('Invalid username or password');
-        }
-
-        res.send('Login successful');
+        res.json(user); // Respond with the user data
     } catch (err) {
-        console.error(err);
-        res.status(500).send('Server Error');
+        res.status(500).json({ message: 'Server Error: ' + err.message });
     }
 });
+
+
+// Route to add user results (update WPM and accuracy)
+// Route to add user results (update WPM and accuracy)
+app.post('/add-user', async (req, res) => {
+    const { email, WPM, accuracy, password, id } = req.body;
+
+    try {
+        let user = await User.findOne({ email });
+
+        if (!user) {
+            // If user does not exist, create a new one with a password
+            if (!password) {
+                return res.status(400).send('Password is required for new users.');
+            }
+            user = new User({
+                email,
+                WPM,
+                accuracy,
+                password, // Use the provided password
+            });
+        } else {
+            // Update existing user's WPM and accuracy
+            user.WPM = WPM;
+            user.accuracy = accuracy;
+        }
+
+        await user.save();
+        res.status(201).send('User added/updated successfully');
+    } catch (error) {
+        console.error('Error adding user:', error);
+        res.status(500).send('Server error');
+    }
+});
+
+
+
 
 // Route to fetch leaderboard data
 app.get('/leaderboard', async (req, res) => {
@@ -95,7 +134,7 @@ app.get('/leaderboard', async (req, res) => {
         // Add rank to each leader
         const rankedLeaders = leaders.map((leader, index) => ({
             rank: index + 1, // Add rank (starting from 1)
-            name: leader.name,
+            name: leader.email,
             WPM: leader.WPM,
             accuracy: leader.accuracy
         }));
