@@ -8,7 +8,13 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB connection
-mongoose.connect('mongodb://localhost:27017/FastFinger', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb+srv://nikhilkottoli2005:TestingPassword@cluster0.pqfk6.mongodb.net/FastFinger?retryWrites=true&w=majority', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
+.then(() => console.log('MongoDB connected successfully!'))
+.catch(err => console.error('MongoDB connection error:', err));
+
 
 const userSchema = new mongoose.Schema({
     name: String,

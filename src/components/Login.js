@@ -20,12 +20,12 @@ const LoginPage = ({ setIsLoggedIn }) => {
     e.preventDefault();
     setError('');
     setLoading(true); // Set loading state
-
+  
     const endpoint = isLogin ? '/login' : '/register';
     const payload = isLogin 
       ? { email, password } 
       : { email, password }; // Only email and password are included for registration
-
+  
     // Validate inputs for login and registration
     if (!email || !password || (!isLogin && !confirmPassword)) {
       setError('Please fill in all fields');
@@ -38,7 +38,7 @@ const LoginPage = ({ setIsLoggedIn }) => {
       setLoading(false);
       return; 
     }
-
+  
     try {
       const response = await fetch(`http://localhost:4000${endpoint}`, {
         method: 'POST',
@@ -47,15 +47,15 @@ const LoginPage = ({ setIsLoggedIn }) => {
         },
         body: JSON.stringify(payload),
       });
-
+  
       if (!response.ok) {
         const errorData = await response.json(); // Parse the error response
         throw new Error(errorData.message || 'Network response was not ok');
       }
-
+  
       const data = await response.json(); // Assuming the response is in JSON format
       console.log(data);
-
+  
       if (isLogin) {
         setIsLoggedIn(true); // Update the login state
         localStorage.setItem('userId', data.user.id);
@@ -66,8 +66,11 @@ const LoginPage = ({ setIsLoggedIn }) => {
         localStorage.setItem('userId', data.user.id);
         localStorage.setItem('email', data.user.email);
         navigate('/home'); // Navigate to home after successful registration
+  
+        // Reload the page after signup
+        window.location.reload(); // This will reload the entire page
       }
-
+  
     } catch (err) {
       console.error('Error:', err);
       setError('An error occurred. Please try again later.');
