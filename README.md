@@ -103,4 +103,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## Contact
 
-For any inquiries or feedback, please contact us at fastfinger@example.com.
+For any inquiries or feedback, please contact at nikhilkottoli2005@gmail.com
