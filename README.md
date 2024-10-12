@@ -40,14 +40,13 @@ A demo video showcasing the functionality of the FastFinger game can be found in
     **For Frontend:**
 
     ```bash
-    cd frontend
     npm install
     ```
 
     **For Backend:**
 
     ```bash
-    cd ../backend
+    cd backend
     npm install
     ```
 
@@ -70,21 +69,16 @@ A demo video showcasing the functionality of the FastFinger game can be found in
 ### Starting the Frontend
 
 1. Open a new terminal window or tab.
-2. Navigate to the `frontend` directory:
 
-    ```bash
-    cd FastFinger/frontend
-    ```
-
-3. Start the frontend application:
+2. Start the frontend application:
 
     ```bash
     npm start
     ```
 
-4. Open your web browser and navigate to `http://localhost:3000`.
+3. Open your web browser and navigate to `http://localhost:3000`.
 
-5. Type the displayed words as fast and accurately as possible.
+4. Type the displayed words as fast and accurately as possible.
 
 ## MongoDB Hosting
 
