@@ -10,6 +10,17 @@ FastFinger is a fun and interactive typing game that helps improve your typing s
 - Leaderboard to compare your scores with others
 - Multiple difficulty levels
 
+## Tech Stack
+
+- **Frontend**: React, HTML, CSS
+- **Backend**: Node.js, Express
+- **Database**: MongoDB (hosted on MongoDB Atlas)
+- **Deployment**: Render (for backend) and GitHub Pages (for frontend)
+
+## Demo
+
+A demo video showcasing the functionality of the FastFinger game can be found in the `public` directory. 
+
 ## Installation
 
 1. Clone the repository:
@@ -29,6 +40,7 @@ FastFinger is a fun and interactive typing game that helps improve your typing s
     **For Frontend:**
 
     ```bash
+    cd frontend
     npm install
     ```
 
@@ -61,7 +73,7 @@ FastFinger is a fun and interactive typing game that helps improve your typing s
 2. Navigate to the `frontend` directory:
 
     ```bash
-    cd FastFinger
+    cd FastFinger/frontend
     ```
 
 3. Start the frontend application:
@@ -73,6 +85,15 @@ FastFinger is a fun and interactive typing game that helps improve your typing s
 4. Open your web browser and navigate to `http://localhost:3000`.
 
 5. Type the displayed words as fast and accurately as possible.
+
+## MongoDB Hosting
+
+The MongoDB database for this project is hosted on [MongoDB Atlas](https://www.mongodb.com/cloud/atlas). To connect your backend to MongoDB Atlas:
+
+1. Create a MongoDB Atlas account and set up a new cluster.
+2. Add your IP address to the cluster's IP whitelist.
+3. Create a database and note the connection string.
+4. In your backend code, use the connection string to connect to your MongoDB database.
 
 ## Contributing
 
