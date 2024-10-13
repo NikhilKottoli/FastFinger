@@ -8,12 +8,13 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB connection
-mongoose.connect('mongodb+srv://nikhilkottoli2005:TestingPassword@cluster0.pqfk6.mongodb.net/FastFinger?retryWrites=true&w=majority', {
+mongoose.connect('mongodb://localhost:27017', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })
-.then(() => console.log('MongoDB connected successfully!'))
+.then(() => console.log('MongoDB connected successfully to localhost!'))
 .catch(err => console.error('MongoDB connection error:', err));
+
 
 
 const userSchema = new mongoose.Schema({
